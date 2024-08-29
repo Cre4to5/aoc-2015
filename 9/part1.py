@@ -1,4 +1,4 @@
-import math
+from itertools import permutations as perm
 
 with open("./9/input.txt", "r") as file:
     lines = file.readlines()
@@ -11,13 +11,25 @@ with open("./9/input.txt", "r") as file:
         cities.add(line[0])
         cities.add(line[2])
         distances[f"{line[0]}-{line[2]}"] = int(line[4])
-        distances[f"{line[2]}-{line[0]}"] = int(line[4])
+        distances[f"{line[2]}-{line[0]}"] = distances[f"{line[0]}-{line[2]}"]
     
 
-    #TODO: better way for all permutations
-    for i in range(0,math.factorial(len(cities))):
-        cities_copy = cities
-        i = -1
-        while True:
-            i += 1
-            cities_copy
+    permutations = list(perm(cities))
+    paths_distances = [0] * len(permutations)
+
+    # print(cities)
+    # print(distances)
+    # print(paths)
+    
+    for i, path in enumerate(permutations):
+        for j in range(0, len(path)-1):
+            # print(j)
+            try:
+                add = distances[f"{path[j]}-{path[j + 1]}"]
+            except:
+                paths_distances[i] = float("inf")
+                break
+            else:
+                paths_distances[i] += add
+    
+    print(min(paths_distances))
